@@ -1,0 +1,11 @@
+{
+  "name": "qtools-parse-command-line",
+  "version": "1.0.0",
+  "description": "zero configuration command line argument parser; just grabs the stuff and makes a JS object out of it",
+  "main": "qtools-parse-command-line.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "TQ White II",
+  "license": "ISC"
+}
