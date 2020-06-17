@@ -4,7 +4,7 @@
   "description": "zero configuration command line argument parser; just grabs the stuff and makes a JS object out of it",
   "main": "qtools-parse-command-line.js",
   "scripts": {
-    "test": "node test.js"
+    "test": "node test.js -demoFlag --demoValue=somethingGood"
   },
   "repository": {
     "type": "git",
