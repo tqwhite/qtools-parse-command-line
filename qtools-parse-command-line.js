@@ -165,6 +165,6 @@ const moduleFunction = function(args={}) {
 //END OF moduleFunction() ============================================================
 
 
-module.exports = moduleFunction;
-//module.exports = new moduleFunction();
+//module.exports = moduleFunction;
+module.exports = new moduleFunction();
 

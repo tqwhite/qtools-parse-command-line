@@ -1,7 +1,5 @@
 
-const commandLineProcessorGen=require('qtools-parse-command-line');
-
-const commandLineProcessor=new commandLineProcessorGen();
+const commandLineProcessor=require('qtools-parse-command-line');
 
 const parameters=commandLineProcessor.getParameters();
 
