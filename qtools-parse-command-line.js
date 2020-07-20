@@ -10,7 +10,7 @@ const moduleFunction = function(args={}) {
 		var noFunctions = args && args.noFunctions ? args.noFunctions : false;
 		var doNotRetrieveFiles = args && args.getFileData ? args.getFileData : true;
 		var valuesSplitCharacter =
-			args && args.valuesSplitCharacter ? args.valuesSplitCharacter : '';
+			args && args.valuesSplitCharacter ? args.valuesSplitCharacter : ',';
 
 		/* someday add 
 		
@@ -103,9 +103,9 @@ const moduleFunction = function(args={}) {
 				if (explosion) {
 					var switchName = explosion[1];
 					if (doNotRetrieveFiles) {
-						var replacement = figureOutWhatItIs(explosion[2]);
-					} else {
 						var replacement = explosion[2];
+					} else {
+						var replacement = figureOutWhatItIs(explosion[2]);
 					}
 				} else {
 					var explosion = element.match(/^--(\w+)/);
@@ -127,9 +127,10 @@ const moduleFunction = function(args={}) {
 				if (typeof replacement == 'number') {
 					replaceObject[switchName] = replacement.toString();
 				} else if (typeof replacement == 'string') {
-					if (valuesSplitCharacter) {
+					if (valuesSplitCharacter && replacement.match(valuesSplitCharacter)) {
 						replacement = replacement.split(valuesSplitCharacter);
 					}
+
 					replaceObject[switchName] = replacement;
 				} else if (typeof(replacement) == 'object' && typeof(replacement.length)=='undefined') {
 					replaceObject = Object.assign(replaceObject, replacement);
