@@ -127,7 +127,7 @@ const moduleFunction = function(args={}) {
 				if (typeof replacement == 'number') {
 					replaceObject[switchName] = replacement.toString();
 				} else if (typeof replacement == 'string') {
-					if (valuesSplitCharacter && replacement.match(valuesSplitCharacter)) {
+					if (valuesSplitCharacter) {
 						replacement = replacement.split(valuesSplitCharacter);
 					}
 
