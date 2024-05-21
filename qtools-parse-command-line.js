@@ -5,7 +5,7 @@ const fs = require('fs');
 //START OF moduleFunction() ============================================================
 
 const moduleFunction = function (args = {}) {
-	const workingFunctionActual = (localArgs) => (operatingArgs) => {
+	const workingFunctionActual = (localArgs) => (operatingArgs={}) => {
 		var noFunctions = args && args.noFunctions ? args.noFunctions : false;
 		var doNotRetrieveFiles = args && args.getFileData ? args.getFileData : true;
 		var valuesSplitCharacter =
