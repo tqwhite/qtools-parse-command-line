@@ -8,7 +8,7 @@ New parameters: injectedCommandString, injectFirstTwoElements
 Added input parameter, injectedCommandString, that substitutes
 an artificially created command string for process.argv. It is parsed by injectedCommandString.split(/ +/) and
 as far as I can tell, acts exactly like it should, ie, if
-	injectedCommandString.replace(/ +/g, ' ')==process.argv.join(' ')
+    injectedCommandString.replace(/ +/g, ' ')==process.argv.join(' ')
 then it produces the same result.
 
 NOTE: Normal process.argv has node and the program name in the first
@@ -33,11 +33,11 @@ var commandLineParms = qtools.parseCommandLine({noFunctions:true})
 processCommandLine() produces an object with four
 elements:
    { calledFromCommandLine: true|false,
-	 fileList:[],
-	 values: {},
-	 functions: {},
-	 switches: {}
-	}
+     fileList:[],
+     values: {},
+     functions: {},
+     switches: {}
+    }
 
 fileList is anything that is has no switch and resolves to a file or directory
 
@@ -61,71 +61,101 @@ Anything in the command line of that form is processed to become
 either a value or a function.
 
 1) Parsed to see if it's javascript and evaluated
-	eg,
+    eg,
+   
+        --tmp="(2+5)"
+   
+    produces a property 
+   
+        values:{tmp:7}
+   
+    or,
+   
+        --tmp="(function(a){return 2*a})"
+   
+    produces a property 
+   
+        functions:{tmp:function(a){return 2*a;}}
+   
+    that can be called later as commandLineOutput.functions.tmp(parameter)
+   
+    or (of course),
+   
+        --tmp="hello world"
+   
+    produces a property 
+   
+        values:{tmp:"hello world"}
+   
+    however, there is a special case for strings, eg,
+   
+        --tmp=/path/to/function.js
+   
+    is checked to see if it resolves to a file. (The path is *not* relative 
+   
+    or glob'd. It must be fully specified.)
 
-		--tmp="(2+5)"
-
-	produces a property 
-
-		values:{tmp:7}
-
-	or,
-
-		--tmp="(function(a){return 2*a})"
-
-	produces a property 
-
-		functions:{tmp:function(a){return 2*a;}}
-
-	that can be called later as commandLineOutput.functions.tmp(parameter)
-
-	or (of course),
-
-		--tmp="hello world"
-
-	produces a property 
-
-		values:{tmp:"hello world"}
-
-	however, there is a special case for strings, eg,
-
-		--tmp=/path/to/function.js
-
-	is checked to see if it resolves to a file. (The path is *not* relative 
-
-	or glob'd. It must be fully specified.)
-
-	
-
-	If it does not produce a value, the property is then eval'd to
-
-	see if it produces a value.
-
-		values:{tmp:"/path/to/function.js"}
-
-	If it does parse and produce a value, the property is,
-
-		values:{tmp:'some value resulting from the file'}
-
-	unless it results in a function, in which case, the property is,
-
-		functions:{tmp:function(){/ *whatever is in the file* /}}
-
-	
-
-	Important note: The function definition must be wrapped in parenthesis.
-
-	eg,
-
-		(function(input){ return input*2;})
-
-	Otherwise it will not eval() and will be treated as a string value.
-
-		
+    If it does not produce a value, the property is then eval'd to
+    
+    see if it produces a value.
+    
+        values:{tmp:"/path/to/function.js"}
+    
+    If it does parse and produce a value, the property is,
+    
+        values:{tmp:'some value resulting from the file'}
+    
+    unless it results in a function, in which case, the property is,
+    
+        functions:{tmp:function(){/ *whatever is in the file* /}}
+    
+    
+    
+    Important note: The function definition must be wrapped in parenthesis.
+    
+    eg,
+    
+        (function(input){ return input*2;})
+    
+    Otherwise it will not eval() and will be treated as a string value.
 
 SWITCHES 
 
 -switchName 
 
 Anything of that form creates a property,
-	values:{switchName:true}
+    values:{switchName:true}
+
+
+
+## Example
+
+Given the command:
+
+```
+node script.js file1.txt -a --name=value --list=item1,item2
+```
+
+The `getParameters()` function would return:
+
+```javascript
+{
+  calledFromCommandLine: true,
+  fileList: ['file1.txt'],
+  values: {
+    name: 'value',
+    list: ['item1', 'item2']
+  },
+  functions: {},
+  switches: {
+    a: true
+  }
+}
+```
+
+In this example:
+
+- `file1.txt` is added to the fileList array (any parameter without a switch)
+- `-a` is captured as a switch with value `true`
+- `--name=value` is stored in values as `{name: 'value'}`
+- `--list=item1,item2` is split by the comma and stored as an array in values: `{list: ['item1', 'item2']}`
