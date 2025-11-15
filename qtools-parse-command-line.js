@@ -159,6 +159,21 @@ const moduleFunction = function (args = {}) {
 				fileList.push(element);
 			}
 		}
+		
+		const switchesList=Object.keys(cmdLineSwitches).filter(key=>cmdLineSwitches[key]===true);
+		const isSwitchSet=switchName=>cmdLineSwitches[switchName];
+		const getValueArray=(valueName)=>{
+			if(replaceObject[valueName]){
+				return replaceObject[valueName]
+			}
+		}
+		const getLastValue=(valueName, defaultValue)=>{
+			const valueArray=getValueArray(valueName);
+			if (valueArray){
+				return valueArray[valueArray.length - 1];
+			}
+			return defaultValue;
+		}
 
 		//systemd has shell level 0; nodemon shell level 2
 		return {
@@ -168,6 +183,10 @@ const moduleFunction = function (args = {}) {
 			values: replaceObject,
 			functions: transformations,
 			switches: cmdLineSwitches,
+			switchesList,
+			isSwitchSet,
+			getValueArray,
+			getLastValue
 		};
 	};
 	

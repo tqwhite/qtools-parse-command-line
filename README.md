@@ -28,22 +28,52 @@ For historical reasons, it defaults to evaluating incoming Javascript.
 This can, of course, be dangerous. It should be called with the
 'noFunctions:true' argument unless you need function evaluation.
 
+tqii 11/14/25
+======================================================
+
+Added switchesList and three convenience methods.
+
+
+## Example
+
+progName -switch1 -switch2 --value1=a --value2 1,2,3 some other stuff 'and more stuff' //--value params delimited by space or equal sign
+
 var commandLineParms = qtools.parseCommandLine({noFunctions:true})
 
-processCommandLine() produces an object with four
+processCommandLine() produces an object with six
 elements:
+```
    { calledFromCommandLine: true|false,
-     fileList:[],
-     values: {},
+     fileList:['some', 'other', 'stuff', 'and more stuff'],
+     values: {value1:['a'], value2:['1', '2', '3']},
      functions: {},
-     switches: {}
+     switches: {switch1:true, switch2:true},
+     switchesList: ['switch1', 'switch2'],
+
+     isSwitchSet: function(switchName){},
+     getValueArray: function(valueName){},
+     getLastValue: function(valueName, defaultValue){}
     }
+```
 
-fileList is anything that is has no switch and resolves to a file or directory
 
-VALUE PARAMETERS
+- fileList has anything that does not follow a string starting with a hyphen.
 
---name=value
+- switches is a list of the switches that start with one hyphen. These take no values.
+
+- values is a map derived from the switches that start with two hyphens. The property value is the value following a space or equal after the switch
+
+- switchesList is an array of the names of all switches that are set to true
+
+All four of the above are always defined, array or object, as appropriate.
+
+```
+    exampleAbove.isSwitchSet('switch1'); //-> true
+    exampleAbove.getValueArray('value1') // -> ['a']
+    exampleAbove.getValueArray('value2') // -> ['1', '2', '3']
+    exampleAbove.getLastValue('value2'); // -> '3'
+```
+
 
 UPDATE (6/28/18) added:
 
@@ -94,23 +124,21 @@ either a value or a function.
     is checked to see if it resolves to a file. (The path is *not* relative 
    
     or glob'd. It must be fully specified.)
-
+   
     If it does not produce a value, the property is then eval'd to
-    
+   
     see if it produces a value.
-    
+   
         values:{tmp:"/path/to/function.js"}
-    
+   
     If it does parse and produce a value, the property is,
-    
+   
         values:{tmp:'some value resulting from the file'}
-    
+   
     unless it results in a function, in which case, the property is,
-    
+   
         functions:{tmp:function(){/ *whatever is in the file* /}}
-    
-    
-    
+
     Important note: The function definition must be wrapped in parenthesis.
     
     eg,
@@ -126,7 +154,36 @@ SWITCHES
 Anything of that form creates a property,
     values:{switchName:true}
 
+CONVENIENCE METHODS
 
+isSwitchSet(switchName) returns true if the switch is set, false otherwise.
+
+    eg,
+
+        if (parameters.isSwitchSet('verbose')) {
+            console.log('Verbose mode enabled');
+        }
+
+getValueArray(valueName) returns the value for a given parameter name,
+or undefined if not set.
+
+    eg,
+
+        const files = parameters.getValueArray('input');
+
+getLastValue(valueName, defaultValue) for array values (from comma-separated
+lists), returns the last element. For single values, returns the value itself.
+If not found, returns the optional defaultValue.
+
+    eg,
+
+        --files=file1.txt,file2.txt,file3.txt
+
+        const lastFile = parameters.getLastValue('files');
+        // Returns 'file3.txt'
+
+        const output = parameters.getLastValue('output', 'default.txt');
+        // Returns 'default.txt' if output was not specified
 
 ## Example
 
@@ -143,13 +200,17 @@ The `getParameters()` function would return:
   calledFromCommandLine: true,
   fileList: ['file1.txt'],
   values: {
-    name: 'value',
+    name: ['value'],
     list: ['item1', 'item2']
   },
   functions: {},
   switches: {
     a: true
-  }
+  },
+  switchesList: ['a'],
+  isSwitchSet: [Function: isSwitchSet],
+  getValueArray: [Function: getValueArray],
+  getLastValue: [Function: getLastValue]
 }
 ```
 
