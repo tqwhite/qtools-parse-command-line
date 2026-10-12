@@ -1,6 +1,6 @@
 {
   "name": "qtools-parse-command-line",
-  "version": "1.0.10",
+  "version": "1.0.11",
   "description": "zero configuration command line argument parser; just grabs the stuff and makes a JS object out of it",
   "main": "qtools-parse-command-line.js",
   "scripts": {
@@ -11,7 +11,7 @@
     "url": "git+https://github.com/tqwhite/qtools-parse-command-line.git"
   },
   "author": "TQ White II",
-  "license": "ISC",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/tqwhite/qtools-parse-command-line/issues"
   },
@@ -20,11 +20,5 @@
   "keywords": [
     "bash",
     "cli"
-  ],
-  "licenses": [
-    {
-      "type": "MIT",
-      "url": "https://github.com/evangelion1204/multi-ini/blob/master/LICENSE"
-    }
   ]
 }

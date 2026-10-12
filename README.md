@@ -220,3 +220,7 @@ In this example:
 - `-a` is captured as a switch with value `true`
 - `--name=value` is stored in values as `{name: 'value'}`
 - `--list=item1,item2` is split by the comma and stored as an array in values: `{list: ['item1', 'item2']}`
+
+## Versions
+
+1.0.11 - License changed to MIT (was ISC). No code changes.
